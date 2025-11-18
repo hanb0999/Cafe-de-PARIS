@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe de PARIS</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/main.js" defer></script>
+</head>
+
+<body>
+    <!-- HEADER -->
+    <header class="site-header" id="top">
+        <div class="top-wrapper">
+        <div class="logo">
+            <img src="images/Logo/logo.png" alt="Logo">
+            <img src="images/Logo/hover-logo.png" alt="Logo color" class="logo-img alt">
+        </div>
+
+        <nav class="character-grid">
+            <img src="images/Characters/egg.png" alt="egg">
+            <img src="images/Characters/canale.png" alt="canale">
+            <img src="images/Characters/croissant.png" alt="croissant">
+            <img src="images/Characters/waffle.png" alt="waffle">
+            <img src="images/Characters/macaron.png" alt="macaron">
+            <img src="images/Characters/baguette.png" alt="baguette">
+            <img src="images/Characters/strawberry.png" alt="strawberry">
+            <img src="images/Characters/pancake.png" alt="pancake">
+            <img src="images/Characters/coffee.png" alt="coffee">
+        </nav>
+
+        <ul class="main-nav">
+            <li><a href="#about">ABOUT</a></li>
+            <li><a href="#menu">MENU</a></li>
+            <li><a href="#news">NEWS</a></li>
+            <li><a href="#access">ACCESS</a></li>
+        </ul>
+        </div>
+
+        <div class="dropdown-trigger" id="floatingMenuBtn">
+            <img src="images/dropdown.png" alt="menu" class="menu-icon">
+        </div>
+
+        <div class="dropdown-menu" id="dropdownMenu">
+            <ul>
+                <li><a href="#about">ABOUT</a></li>
+                <li><a href="#menu">MENU</a></li>
+                <li><a href="#news">NEWS</a></li>
+                <li><a href="#access">ACCESS</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- ABOUT -->
+    <section id="about" class="about-section">
+        <div class="about-vertical">ABOUT</div>
+
+        <div class="about-inner">
+            <svg class="about-arc top-arc" viewBox="0 0 900 120" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                    <path id="aboutArcTop" d="M70,140 C300,0 600,0 830,150"></path>
+                </defs>
+                <text font-family="KaiseiDecol" font-size="48">
+                    <textPath href="#aboutArcTop" startOffset="52%" text-anchor="middle">早朝6時からオープン！</textPath>
+                </text>
+            </svg>
+
+            <figure class="about-oval" role="group">
+                <img src="images/Cafe/img7.jpg" alt="" class="oval-slide active">
+                <img src="images/Cafe/img4.jpg" alt="" class="oval-slide">
+                <img src="images/Cafe/img23.jpg" alt="" class="oval-slide">
+                <img src="images/Cafe/img28.jpg" alt="" class="oval-slide">
+
+                <figcaption class="about-badge">お店の紹介</figcaption>
+            </figure>
+
+            <div class="about-copy">
+                <p class="about-copy-line">ランチタイムは、定番のパスタやトースト、<br>卵料理などの日替わりランチがおすすめ！</p><br>
+                <p class="about-copy-line">西新宿だから交通の便もよく、<br>お集まり・ショッピングなどにも最適！ </p>
+            </div>
+
+            <svg class="about-arc bottom-arc" viewBox="0 0 900 160" preserveAspectRatio="xMidYMid meet">
+                <defs>
+                    <path id="aboutArcBottom" d="M70,117 C260,165 640,165 840,110"></path>
+                </defs>
+                <text id="curveText" font-family="KaiseiDecol" font-size="40" fill="#111">
+                    <textPath 
+                        id="curveTextPath" 
+                        href="#aboutArcBottom" 
+                        startOffset="51%" 
+                        text-anchor="middle"
+                        data-text="お二人だけのランチタイムにいかがですか。"
+                    ></textPath>
+                </text>
+            </svg>
+        </div>
+    </section>
+
+    <!-- MENU -->
+    <section id="menu" class="menu-section">
+        <div class="menu-title-wrapper">
+            <h2 class="menu-title-pink">MENU</h2>
+            <div class="menu-title-outline">MENU</div>
+            <figcaption class="menu-badge">商品の情報</figcaption>
+        </div>
+
+        <div class="menu-categories">
+            <figure class="category-item food-category">
+                <a href="#menu">
+                    <img src="images/Characters/egg.png" alt="Food Category">
+                    <figcaption>フード</figcaption>
+                </a>
+            </figure>
+            <figure class="category-item sweets-category">
+                <a href="#menu">
+                    <img src="images/Characters/macaron.png" alt="Sweets Category">
+                    <figcaption>スイーツ</figcaption>
+                </a>
+            </figure>
+            <figure class="category-item drinks-category">
+                <a href="#menu">
+                    <img src="images/Characters/coffee.png" alt="Drinks Category">
+                    <figcaption>ドリンク</figcaption></a>
+            </figure>
+        </div>
+    </section>
+
+    <!-- NEWS -->
+    <section id="news" class="news-section">
+        <div class="news-background-text">
+            <span class="news-bg-line-1">NEWS NEWS NEWS</span>
+            <br>
+            <span class="news-bg-line-2">NEWS NEWS NEWS</span>
+            <br>
+            <span class="news-bg-line-3">NEWS NEWS NEWS</span>
+        </div>
+
+        <div class="news-middle-lines">
+            <div class="line line-1"></div><br>
+            <div class="line line-2"></div><br>
+            <div class="line line-3"></div>
+        </div>
+
+        <div class="news-inner">
+            <div class="news-title-wrapper">
+                <div class="news-title-outline">NEWS</div>
+                <figcaption class="news-badge">ニュース</figcaption>
+            </div>
+        </div>
+
+        <ul class="news-list">
+            <a href="#news">
+            <li>
+                <span class="news-date">2018.10.10</span>
+                お待ちたせ致しました！カフェ・ド・パリWebサイトをオープン致しました。
+            </li>
+            </a>
+            <br>
+
+            <a href="#news">
+            <li>
+                <span class="news-date">2018.10.11</span> 
+                新作マカロン登場！
+            </li>
+            </a>
+            <br>
+
+            <a href="#news">
+            <li>
+                <span class="news-date">2018.10.11</span> 
+                新規サイトオープン企画 Webサイトを見て特製ケーキをもらおう！
+            </li>
+            </a>
+        </ul>
+    </section>
+
+    <!-- ACCESS -->
+    <section id="access" class="access-section">
+        <div class="slider-wrapper">
+            <div class="slider-track" id="imageSliderTrack">
+                <img src="images/Cafe/img1.jpg" alt="Cafe IMG">
+                <img src="images/Cafe/img5.jpg" alt="Cafe IMG">
+                <img src="images/Cafe/img8.jpg" alt="Cafe IMG">
+                <img src="images/Cafe/img42.jpg" alt="Cafe IMG">
+                <img src="images/Cafe/img13.jpg" alt="Cafe IMG">
+                <img src="images/Cafe/img10.jpg" alt="Cafe IMG">
+
+                <img src="images/Cafe/img1.jpg" alt="Cafe IMG">
+                <img src="images/Cafe/img5.jpg" alt="Cafe IMG">
+                <img src="images/Cafe/img8.jpg" alt="Cafe IMG">
+                <img src="images/Cafe/img42.jpg" alt="Cafe IMG">
+                <img src="images/Cafe/img13.jpg" alt="Cafe IMG">
+                <img src="images/Cafe/img10.jpg" alt="Cafe IMG">
+            </div>
+        </div>
+
+        <div class="access-title-wrapper">
+            <h2 class="access-title-white">ACCESS</h2>
+            <div class="access-title-outline">ACCESS</div>
+            <figcaption class="access-badge">アクセス</figcaption>
+        </div>
+
+        <div class="access-info-wrapper">
+            <p class="access-time"><span class="label">OPEN</span> 6:00 - 22:00</p>
+            <p class="access-tel"><span class="label">TEL</span> 03-3344-1010</p>
+            <p class="access-address">東京都新宿区西新宿 1-7-3</p>
+            <p class="access-address">総合校舎コクーンタワー1階</p>
+        </div>
+
+        <div class="social-media">
+            <a href="#access"><img src="images/Social-Media/instagram.png" alt="Instagram"></a>
+            <a href="#access"><img src="images/Social-Media/twitter.png" alt="Twitter"></a>
+            <a href="#access"><img src="images/Social-Media/facebook.png" alt="Facebook"></a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; Café de PARIS. All Rights Reserved</p>
+    </footer>
+</body>
+</html>
