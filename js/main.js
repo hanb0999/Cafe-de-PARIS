@@ -1,228 +1,261 @@
-// CHARACTER GRID
+let activeFollowerPositions = [];
+
 document.addEventListener("DOMContentLoaded", () => {
-  const grid = document.querySelector(".character-grid");
-  if (grid) { 
-      const imgEls = Array.from(grid.querySelectorAll("img"));
-      const finalOrder = imgEls.map(img => img.src); 
-      const pool = [...finalOrder];
+    const grid = document.querySelector(".character-grid");
+    if (grid) { 
+        const imgEls = Array.from(grid.querySelectorAll("img"));
+        const finalOrder = imgEls.map(img => img.src); 
+        const pool = [...finalOrder];
         
-      let isLotteryActive = false;
-      let lotteryCharacterSrc = '';
+        let isLotteryActive = false;
+        let lotteryCharacterSrc = '';
         
-      const LOTTERY_ROW = 1; 
-      const LOTTERY_CHANCE = 0.5; 
+        const LOTTERY_ROW = 1; 
+        const LOTTERY_CHANCE = 0.5; 
+        
+        const FOLLOWER_SIZE = 120;
+        const PADDING = 20;
+        const MAX_ATTEMPTS = 50;
 
-      const hoverMessage = document.createElement('div');
-      hoverMessage.textContent = "カチャッと一勝負！"; 
-      hoverMessage.classList.add('shuffle-message');
-      document.body.appendChild(hoverMessage);
+        const hoverMessage = document.createElement('div');
+        hoverMessage.textContent = "カチャッと一勝負！"; 
+        hoverMessage.classList.add('shuffle-message');
+        document.body.appendChild(hoverMessage);
 
-      function getValidRandomSrc(index) {
-          const rowLength = 3; 
-          const currentIndex = index % rowLength;
+        function isOverlapping(newRect, existingPositions) {
+            return existingPositions.some(existingRect => {
+                return (
+                    newRect.left < existingRect.right &&
+                    newRect.right > existingRect.left &&
+                    newRect.top < existingRect.bottom &&
+                    newRect.bottom > existingRect.top
+                );
+            });
+        }
 
-          let attempts = 0;
-          let src;
+        function getValidRandomSrc(index) {
+            const rowLength = 3; 
+            const currentIndex = index % rowLength;
 
-          do {
-              src = pool[Math.floor(Math.random() * pool.length)];
-              attempts++;
+            let attempts = 0;
+            let src;
 
-              const leftIndex = index - 1;
-              const topIndex = index - rowLength;
+            do {
+                src = pool[Math.floor(Math.random() * pool.length)];
+                attempts++;
 
-              const leftMatch = leftIndex >= 0 && (currentIndex !== 0) && imgEls[leftIndex].src === src;
-              const topMatch = topIndex >= 0 && imgEls[topIndex].src === src;
+                const leftIndex = index - 1;
+                const topIndex = index - rowLength;
 
-              if (!leftMatch && !topMatch) {
-                  return src;
-              }
-          } while (attempts < 20);
+                const leftMatch = leftIndex >= 0 && (currentIndex !== 0) && imgEls[leftIndex].src === src;
+                const topMatch = topIndex >= 0 && imgEls[topIndex].src === src;
 
-          return src; 
-      }
+                if (!leftMatch && !topMatch) {
+                    return src;
+                }
+            } while (attempts < 20);
 
-      function startFollowerEffect(characterSrc) {
+            return src; 
+        }
 
-          const existingFollower = document.querySelector('character-follower');
-          if (existingFollower) existingFollower.remove();
+        function startFollowerEffect(characterSrc) {
+            const follower = document.createElement('img');
+            follower.src = characterSrc;
+            follower.classList.add('character-follower');
             
-          const follower = document.createElement('img');
-          follower.src = characterSrc;
-          follower.classList.add('character-follower');
+            const followerMessage = document.createElement('div');
+            followerMessage.textContent = "またね！"; 
+            followerMessage.classList.add('follower-message');
+            document.body.appendChild(followerMessage);
+
+            let newPosition = {};
+            let attempts = 0;
+
+            do {
+                const maxLeft = window.innerWidth - FOLLOWER_SIZE - PADDING;
+                const maxTop = window.innerHeight - FOLLOWER_SIZE - PADDING;
+
+                newPosition.left = PADDING + Math.random() * maxLeft;
+                newPosition.top = PADDING + Math.random() * maxTop;
+
+                const newRect = {
+                    left: newPosition.left,
+                    top: newPosition.top,
+                    right: newPosition.left + FOLLOWER_SIZE,
+                    bottom: newPosition.top + FOLLOWER_SIZE,
+                    id: Date.now() + attempts
+                };
+
+                if (!isOverlapping(newRect, activeFollowerPositions)) {
+                    follower.style.left = `${newPosition.left}px`;
+                    follower.style.top = `${newPosition.top}px`;
+                    follower.style.position = 'fixed';
+                    document.body.appendChild(follower);
+                    
+                    activeFollowerPositions.push(newRect);
+                    follower.dataset.followerId = newRect.id;
+                    
+                    followerMessage.style.left = `${newPosition.left + FOLLOWER_SIZE / 2}px`;
+                    followerMessage.style.top = `${newPosition.top - 30}px`;
+                    followerMessage.style.position = 'fixed';
+
+                    break;
+                }
+                attempts++;
+            } while (attempts < MAX_ATTEMPTS);
             
-          follower.classList.add('pop-out'); 
-          document.body.appendChild(follower);
+            if (attempts >= MAX_ATTEMPTS) {
+                followerMessage.remove();
+                return;
+            }
 
-          setTimeout(() => follower.classList.remove('pop-out'), 500);
+            follower.classList.add('pop-out'); 
+            setTimeout(() => follower.classList.remove('pop-out'), 500);
 
-          const followerMessage = document.createElement('div');
-          followerMessage.textContent = "またね！"; 
-          followerMessage.classList.add('follower-message');
-          document.body.appendChild(followerMessage);
-
-          let lastScrollY = window.scrollY;
-
-          function updateFollowerPosition() {
-              let targetY = window.scrollY;
-              lastScrollY += (targetY - lastScrollY) * 0.1;
-              follower.style.transform = `translateY(${lastScrollY}px)`;
-
-              const rect = follower.getBoundingClientRect();
-              followerMessage.style.top = `${rect.top + window.scrollY - 30}px`; 
-              followerMessage.style.left = `${rect.left + window.scrollX + rect.width / 2}px`;
-          }
-
-          function animateFollow() {
-              if (follower.parentNode) {
-                  updateFollowerPosition();
-                  requestAnimationFrame(animateFollow);
-              }
-          }
+            follower.addEventListener('mouseenter', () => {
+                followerMessage.style.display = 'block';
+            });
             
-          animateFollow(); 
-      
-          follower.addEventListener('mouseenter', () => {
-              followerMessage.style.display = 'block';
-          });
+            follower.addEventListener('mouseleave', () => {
+                followerMessage.style.display = 'none';
+            });
+
+            follower.addEventListener('click', () => {
+                const followerId = parseInt(follower.dataset.followerId);
+                activeFollowerPositions = activeFollowerPositions.filter(
+                    pos => pos.id !== followerId
+                );
+                follower.remove();
+                followerMessage.remove(); 
+            });
+        }
+
+        function startShuffle(checkLottery) {
+            grid.style.pointerEvents = 'none'; 
+            isLotteryActive = false;
+            grid.classList.remove('jackpot-glow');
             
-          follower.addEventListener('mouseleave', () => {
-              followerMessage.style.display = 'none';
-          });
+            if (checkLottery && Math.random() < LOTTERY_CHANCE) {
+                isLotteryActive = true;
+                lotteryCharacterSrc = pool[Math.floor(Math.random() * pool.length)];
+            }
 
-          follower.addEventListener('click', () => {
-              follower.remove();
-              followerMessage.remove(); 
-          });
-      }
+            let ticks = 0;
+            const maxTicks = 22;
+            const intervalMs = 90;
 
-      function startShuffle(checkLottery) {
-          grid.style.pointerEvents = 'none'; 
-          isLotteryActive = false;
-          grid.classList.remove('jackpot-glow');
+            const interval = setInterval(() => {
+                imgEls.forEach((img, idx) => {
+                    img.src = getValidRandomSrc(idx); 
+                });
+
+                ticks++;
+
+                if (ticks >= maxTicks) {
+                    clearInterval(interval);
+                    
+                    imgEls.forEach((img, idx) => {
+                        const currentRow = Math.floor(idx / 3);
+                        if (isLotteryActive && currentRow === LOTTERY_ROW) {
+                            img.src = lotteryCharacterSrc; 
+                        } else {
+                            img.src = finalOrder[idx]; 
+                        }
+                    });
+
+                    if (isLotteryActive) {
+                        const winningRow = imgEls.slice(LOTTERY_ROW * 3, LOTTERY_ROW * 3 + 3);
             
-          if (checkLottery && Math.random() < LOTTERY_CHANCE) {
-              isLotteryActive = true;
-              lotteryCharacterSrc = pool[Math.floor(Math.random() * pool.length)];
-              console.log(`JACKPOT HIT! Winning character: ${lotteryCharacterSrc}`); 
-          }
+                        winningRow.forEach(img => {
+                            img.classList.add('jackpot-grow');
+                        });
+                        grid.classList.add('jackpot-glow');
 
-          let ticks = 0;
-          const maxTicks = 22;
-          const intervalMs = 90;
-
-          const interval = setInterval(() => {
-              imgEls.forEach((img, idx) => {
-                  img.src = getValidRandomSrc(idx); 
-              });
-
-              ticks++;
-
-              if (ticks >= maxTicks) {
-                  clearInterval(interval);
-                   
-                  imgEls.forEach((img, idx) => {
-                      const currentRow = Math.floor(idx / 3);
-                      if (isLotteryActive && currentRow === LOTTERY_ROW) {
-                          img.src = lotteryCharacterSrc; 
-                      } else {
-                          img.src = finalOrder[idx]; 
-                      }
-                  });
-
-                  if (isLotteryActive) {
-                      const winningRow = imgEls.slice(LOTTERY_ROW * 3, LOTTERY_ROW * 3 + 3);
-            
-                      winningRow.forEach(img => {
-                          img.classList.add('jackpot-grow');
-                      });
-                      grid.classList.add('jackpot-glow');
-
-                      setTimeout(() => {
-                          winningRow.forEach(img => img.classList.remove('jackpot-grow'));
-                          startFollowerEffect(lotteryCharacterSrc);
-                      
-                          setTimeout(() => {
-                              grid.classList.remove('jackpot-glow'); 
-                          }, 500); 
+                        setTimeout(() => {
+                            winningRow.forEach(img => img.classList.remove('jackpot-grow'));
+                            startFollowerEffect(lotteryCharacterSrc);
+                        
+                            setTimeout(() => {
+                                grid.classList.remove('jackpot-glow'); 
+                            }, 500); 
                             
-                          grid.style.pointerEvents = 'auto'; 
-                      }, 800); 
-                  } else {
-                      grid.style.pointerEvents = 'auto'; 
-                  }
-              }
-          }, intervalMs);
-      }
-      
-      startShuffle(false); 
+                            grid.style.pointerEvents = 'auto'; 
+                        }, 800); 
+                    } else {
+                        grid.style.pointerEvents = 'auto'; 
+                    }
+                }
+            }, intervalMs);
+        }
+        
+        startShuffle(false); 
 
-      grid.addEventListener('click', () => {
-          if (grid.style.pointerEvents !== 'none') {
-              startShuffle(true); 
-          }
-      });
+        grid.addEventListener('click', () => {
+            if (grid.style.pointerEvents !== 'none') {
+                startShuffle(true); 
+            }
+        });
 
-      imgEls.forEach(img => {
-          img.addEventListener('mouseenter', () => {
-              const rect = img.getBoundingClientRect();
+        imgEls.forEach(img => {
+            img.addEventListener('mouseenter', () => {
+                const rect = img.getBoundingClientRect();
                 
-              hoverMessage.style.display = 'block';
-              hoverMessage.style.top = `${rect.top + window.scrollY - 25}px`;
-              hoverMessage.style.left = `${rect.left + window.scrollX + rect.width / 2 + 5}px`;
-          });
+                hoverMessage.style.display = 'block';
+                hoverMessage.style.top = `${rect.top + window.scrollY - 25}px`;
+                hoverMessage.style.left = `${rect.left + window.scrollX + rect.width / 2 + 5}px`;
+            });
             
-          img.addEventListener('mouseleave', () => {
-              hoverMessage.style.display = 'none';
-          });
-      });
-  }
+            img.addEventListener('mouseleave', () => {
+                hoverMessage.style.display = 'none';
+            });
+        });
+    }
     
-  // ABOUT BOTTOM TEXT TYPING 
-  function setupCurveTextTyping() {
-      const curveTextPath = document.getElementById('curveTextPath'); 
+    // ABOUT CURVE TYPE ANIMATION
+    function setupCurveTextTyping() {
+        const curveTextPath = document.getElementById('curveTextPath'); 
         
-      if (!curveTextPath) return;
+        if (!curveTextPath) return;
 
-      const fullText = curveTextPath.getAttribute('data-text');
-      curveTextPath.textContent = ''; 
+        const fullText = curveTextPath.getAttribute('data-text');
+        curveTextPath.textContent = ''; 
         
-      function startTyping(element, text) {
-          let index = 0;
-          const typingIntervalMs = 80; 
+        function startTyping(element, text) {
+            let index = 0;
+            const typingIntervalMs = 80; 
 
-          function typeCharacter() {
-              if (index < text.length) {
-                  element.textContent += text.charAt(index);
-                  index++;
-                  setTimeout(typeCharacter, typingIntervalMs);
-              }
-          }
-          typeCharacter();
-      }
+            function typeCharacter() {
+                if (index < text.length) {
+                    element.textContent += text.charAt(index);
+                    index++;
+                    setTimeout(typeCharacter, typingIntervalMs);
+                }
+            }
+            typeCharacter();
+        }
 
-      const observerOptions = {
-          root: null,
-          rootMargin: '0px 0px -100px 0px', 
-          threshold: 0.01
-      };
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px 0px -100px 0px', 
+            threshold: 0.01
+        };
 
-      const curveObserver = new IntersectionObserver((entries, observer) => {
-          entries.forEach(entry => {
-              if (entry.isIntersecting) {
-                  startTyping(entry.target, fullText);
-                  observer.unobserve(entry.target);
-              } 
-          });
-      }, observerOptions);
+        const curveObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    startTyping(entry.target, fullText);
+                    observer.unobserve(entry.target);
+                } 
+            });
+        }, observerOptions);
 
-      curveObserver.observe(curveTextPath); 
-  }
+        curveObserver.observe(curveTextPath); 
+    }
 
-  setupCurveTextTyping();
+    setupCurveTextTyping();
 });
 
-// --- DROP DOWN MENU ---
+// DROPDOWN MENU
 const floatingButton = document.getElementById("floatingMenuBtn");
 const dropdownMenu = document.getElementById("dropdownMenu");
 const mainNav = document.querySelector(".main-nav"); 
@@ -244,39 +277,39 @@ if (floatingButton && dropdownMenu && mainNav) {
     });
 }
 
-// --- ABOUT OVAL SLIDESHOW ---
+// ABOUT SLIDESHOW
 (function () {
-  const oval = document.querySelector('.about-oval');
-  if (!oval) return;
+    const oval = document.querySelector('.about-oval');
+    if (!oval) return;
 
-  const slides = Array.from(oval.querySelectorAll('.oval-slide'));
-  if (slides.length <= 1) return;
+    const slides = Array.from(oval.querySelectorAll('.oval-slide'));
+    if (slides.length <= 1) return;
 
-  let current = 0;
-  const intervalMs = 3000;
+    let current = 0;
+    const intervalMs = 3000;
 
-  slides.forEach((s, i) => {
-    s.style.opacity = i === 0 ? '1' : '0';
-    s.classList.toggle('active', i === 0);
-    s.style.zIndex = i === 0 ? 2 : 1;
-  });
+    slides.forEach((s, i) => {
+        s.style.opacity = i === 0 ? '1' : '0';
+        s.classList.toggle('active', i === 0);
+        s.style.zIndex = i === 0 ? 2 : 1;
+    });
 
-  setInterval(() => {
-    const next = (current + 1) % slides.length;
+    setInterval(() => {
+        const next = (current + 1) % slides.length;
 
-    slides[current].classList.remove('active');
-    slides[current].style.opacity = '0';
-    slides[current].style.zIndex = 1;
+        slides[current].classList.remove('active');
+        slides[current].style.opacity = '0';
+        slides[current].style.zIndex = 1;
 
-    slides[next].classList.add('active');
-    slides[next].style.opacity = '1';
-    slides[next].style.zIndex = 2;
+        slides[next].classList.add('active');
+        slides[next].style.opacity = '1';
+        slides[next].style.zIndex = 2;
 
-    current = next;
-  }, intervalMs);
+        current = next;
+    }, intervalMs);
 })();
 
-// --- ACCESS SLIDESHOW ---
+// ACCESS SLIDESHOW
 (function () {
     const track = document.getElementById('imageSliderTrack');
     if (!track) return;
