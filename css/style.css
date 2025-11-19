@@ -521,13 +521,29 @@ body {
 .category-item a {
     text-decoration: none;
 }
-.category-item img {
+.category-item .image-container {
+    position: relative;
     width: 314px; 
-    height: auto;
-    object-fit: contain;
+    height: 314px; 
     margin-top: 0;
     margin-bottom: 20px;
     transition: transform 0.2s ease;
+}
+.category-item .image-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; 
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    transition: opacity 0.2s ease; 
+}
+.category-item .image-container .hover-img {
+    opacity: 0;
+}
+.category-item .image-container .primary-img {
+    opacity: 1;
 }
 .category-item figcaption {
     font-family: 'KaiseiDecol', serif;
@@ -536,8 +552,14 @@ body {
     line-height: 1.2;
     transition: color 0.2s ease, transform 0.2s ease;
 } 
-.category-item:hover img {
-    transform: translateY(-5px) scale(1.10);
+.category-item:hover .image-container {
+    transform: translateY(-5px) scale(1.10); 
+}
+.category-item:hover .image-container .primary-img {
+    opacity: 0; 
+}
+.category-item:hover .image-container .hover-img {
+    opacity: 1; 
 }
 .category-item:hover figcaption {
     transform: translateY(-5px) scale(1.10);
