@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const MAX_ATTEMPTS = 50;
 
         const hoverMessage = document.createElement('div');
-        hoverMessage.textContent = "カチャッと一勝負！"; 
+        hoverMessage.textContent = "ガチャッと一勝負！"; 
         hoverMessage.classList.add('shuffle-message');
         document.body.appendChild(hoverMessage);
 
