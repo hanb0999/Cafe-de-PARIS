@@ -279,6 +279,25 @@ body {
     transform: translateY(-1px) scale(1.02);
 }
 
+/* PARALLAX */
+section {
+    width: 100vw;
+    padding: 64px 0;
+    position: relative;
+}
+.parallax-section {
+    width: 100vw;
+    height: 80vh;
+    background-attachment: fixed;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin: 0;
+    padding: 0;
+    position: relative;
+    z-index: 1;
+}
+
 /* ABOUT */
 .about-section {
     position: relative;
